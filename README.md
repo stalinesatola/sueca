@@ -2,7 +2,9 @@
 
 Jogo de cartas Sueca em HTML/CSS/JS puro (sem dependências), jogável no navegador contra o computador.
 
-Abre `index.html` diretamente num navegador para jogar.
+🔗 **Jogar:** https://stalinesatola.github.io/sueca/
+
+Ou abre `index.html` diretamente num navegador.
 
 ## Modo de jogo
 
