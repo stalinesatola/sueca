@@ -104,10 +104,9 @@
   .trunfo-badge .mini-carta .marca { font-size: .5rem; }
   .trunfo-badge .mini-carta .central-rank { font-size: .8rem; }
   .trunfo-badge .mini-carta .central-naipe { font-size: 1rem; }
-  .trunfo-badge .mini-carta .central-fraca { font-size: 1rem; }
-  .trunfo-badge .mini-carta .emblema-letra { font-size: .62rem; }
-  .trunfo-badge .mini-carta .emblema-naipe { font-size: .46rem; }
-  .trunfo-badge .mini-carta .emblema-anel { width: 16px; height: 16px; }
+  .trunfo-badge .mini-carta .pip-grande { font-size: 1.1rem; }
+  .trunfo-badge .mini-carta .crista-escudo { width: 15px; height: 17px; font-size: .55rem; border-width: 1px; }
+  .trunfo-badge .mini-carta .crista-letra { font-size: .4rem; }
   .trunfo-badge span { font-size: .58rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--dourado); }
 
   .mesa-jogo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 320px; }
@@ -146,21 +145,22 @@
   .carta.escura .central-naipe { color: var(--espadas); }
   .carta.verde .central-naipe { color: var(--paus); }
 
-  /* baralho clássico */
-  .carta-face.classico { background: #fbfaf5; border: 1px solid #1a1a1a; }
-  .carta-face.classico .moldura { position: absolute; inset: 4px; border: 1px solid #3c5a82; border-radius: 3px; pointer-events: none; }
-  .carta-face.classico .marca { font-weight: 700; }
-  .carta-face.classico .central-fraca { position: absolute; font-size: 1.9rem; opacity: .1; }
-  .carta-face.classico .emblema { position: absolute; display: flex; align-items: center; justify-content: center; }
-  .carta-face.classico .emblema-anel { position: absolute; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid; opacity: .4; }
-  .carta-face.classico .emblema-letra { font-family: "Cinzel", serif; font-weight: 700; font-size: 1.15rem; z-index: 1; }
-  .carta-face.classico .emblema-naipe { font-size: .85rem; z-index: 1; position: absolute; margin-top: 1.3em; }
-  .carta-face.classico.cl-preta .marca, .carta-face.classico.cl-preta .central-fraca,
-  .carta-face.classico.cl-preta .emblema-letra, .carta-face.classico.cl-preta .emblema-naipe { color: #161616; }
-  .carta-face.classico.cl-preta .emblema-anel { border-color: #161616; }
-  .carta-face.classico.cl-vermelha .marca, .carta-face.classico.cl-vermelha .central-fraca,
-  .carta-face.classico.cl-vermelha .emblema-letra, .carta-face.classico.cl-vermelha .emblema-naipe { color: #a3161c; }
-  .carta-face.classico.cl-vermelha .emblema-anel { border-color: #a3161c; }
+  /* baralho clássico — imita um baralho físico real */
+  .carta-face.classico { background: #fbfaf6; border: 1px solid #262626; border-radius: 6px; font-family: "Cinzel", serif; }
+  .carta-face.classico .moldura { position: absolute; inset: 4px; border: 1px solid #4a6fa5; border-radius: 2px; pointer-events: none; }
+  .carta-face.classico .marca { font-family: "Cinzel", serif; font-weight: 700; line-height: 1.05; text-align: center; }
+  .carta-face.classico .marca .naipe { font-size: .78em; }
+  .carta-face.classico .pip-grande { position: absolute; font-size: 2.4rem; line-height: 1; }
+  .carta-face.classico .crista { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .carta-face.classico .crista-escudo { width: 26px; height: 30px; border-radius: 4px 4px 11px 11px; border: 1.5px solid;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .carta-face.classico .crista-letra { font-weight: 700; font-size: .58rem; letter-spacing: .06em; }
+  .carta-face.classico.cl-preta .marca, .carta-face.classico.cl-preta .pip-grande,
+  .carta-face.classico.cl-preta .crista-escudo, .carta-face.classico.cl-preta .crista-letra { color: #141414; }
+  .carta-face.classico.cl-preta .crista-escudo { border-color: #141414; background: rgba(20,20,20,.07); }
+  .carta-face.classico.cl-vermelha .marca, .carta-face.classico.cl-vermelha .pip-grande,
+  .carta-face.classico.cl-vermelha .crista-escudo, .carta-face.classico.cl-vermelha .crista-letra { color: #c81c22; }
+  .carta-face.classico.cl-vermelha .crista-escudo { border-color: #c81c22; background: rgba(200,28,34,.08); }
 
   .carta-dorso { width: 100%; height: 100%; border-radius: 7px;
     background: radial-gradient(circle at 50% 50%, rgba(211,169,78,.9) 0 3px, transparent 3.5px) 0 0/13px 13px,
@@ -480,7 +480,7 @@
   }
 
   // ---------------- tema do baralho ----------------
-  let temaCartas = 'dourado';
+  let temaCartas = 'classico';
   try { const t = localStorage.getItem('sueca4-tema'); if (t === 'dourado' || t === 'classico') temaCartas = t; } catch (e) {}
 
   // ---------------- render de cartas ----------------
@@ -488,13 +488,16 @@
     const el = document.createElement('div');
     if (tema === 'classico') {
       const cor = (carta.naipe === 'copas' || carta.naipe === 'ouros') ? 'cl-vermelha' : 'cl-preta';
-      const faceCard = carta.rank === 'A' || carta.rank === 'K' || carta.rank === 'Q' || carta.rank === 'J';
       el.className = `carta-face classico ${cor}`;
+      let centro = '';
+      if (carta.rank === 'A') {
+        centro = `<span class="pip-grande">${carta.simbolo}</span>`;
+      } else if (carta.rank === 'K' || carta.rank === 'Q' || carta.rank === 'J') {
+        centro = `<span class="crista"><span class="crista-escudo">${carta.simbolo}</span><span class="crista-letra">${carta.rotulo}</span></span>`;
+      }
       el.innerHTML = `<span class="moldura"></span>
         <span class="marca tl">${carta.rotulo}<span class="naipe">${carta.simbolo}</span></span>
-        ${faceCard
-          ? `<span class="emblema"><span class="emblema-anel"></span><span class="emblema-letra">${carta.rotulo}</span><span class="emblema-naipe">${carta.simbolo}</span></span>`
-          : `<span class="central-fraca">${carta.simbolo}</span>`}
+        ${centro}
         <span class="marca br">${carta.rotulo}<span class="naipe">${carta.simbolo}</span></span>`;
       return el;
     }
