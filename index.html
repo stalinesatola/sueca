@@ -96,7 +96,14 @@
   .vaza-info { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-esbatido); font-weight: 700; font-variant-numeric: tabular-nums; }
   .trunfo-badge { position: absolute; top: -2px; right: 2px; display: flex; align-items: center; gap: 6px;
     background: rgba(8,26,19,.7); border: 1px solid var(--painel-borda); border-radius: 999px; padding: 4px 10px 4px 4px; }
-  .trunfo-badge .mini-carta { width: 24px; height: 34px; font-size: .8rem; }
+  .trunfo-badge .mini-carta { width: 32px; height: 45px; }
+  .trunfo-badge .mini-carta .marca { font-size: .5rem; }
+  .trunfo-badge .mini-carta .central-rank { font-size: .8rem; }
+  .trunfo-badge .mini-carta .central-naipe { font-size: 1rem; }
+  .trunfo-badge .mini-carta .central-fraca { font-size: 1rem; }
+  .trunfo-badge .mini-carta .emblema-letra { font-size: .62rem; }
+  .trunfo-badge .mini-carta .emblema-naipe { font-size: .46rem; }
+  .trunfo-badge .mini-carta .emblema-anel { width: 16px; height: 16px; }
   .trunfo-badge span { font-size: .58rem; letter-spacing: .06em; text-transform: uppercase; font-weight: 700; color: var(--dourado); }
 
   .mesa-jogo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 320px; }
@@ -134,6 +141,22 @@
   .carta.ouro .central-naipe { color: var(--ouros); }
   .carta.escura .central-naipe { color: var(--espadas); }
   .carta.verde .central-naipe { color: var(--paus); }
+
+  /* baralho clássico */
+  .carta-face.classico { background: #fbfaf5; border: 1px solid #1a1a1a; }
+  .carta-face.classico .moldura { position: absolute; inset: 4px; border: 1px solid #3c5a82; border-radius: 3px; pointer-events: none; }
+  .carta-face.classico .marca { font-weight: 700; }
+  .carta-face.classico .central-fraca { position: absolute; font-size: 1.9rem; opacity: .1; }
+  .carta-face.classico .emblema { position: absolute; display: flex; align-items: center; justify-content: center; }
+  .carta-face.classico .emblema-anel { position: absolute; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid; opacity: .4; }
+  .carta-face.classico .emblema-letra { font-family: "Cinzel", serif; font-weight: 700; font-size: 1.15rem; z-index: 1; }
+  .carta-face.classico .emblema-naipe { font-size: .85rem; z-index: 1; position: absolute; margin-top: 1.3em; }
+  .carta-face.classico.cl-preta .marca, .carta-face.classico.cl-preta .central-fraca,
+  .carta-face.classico.cl-preta .emblema-letra, .carta-face.classico.cl-preta .emblema-naipe { color: #161616; }
+  .carta-face.classico.cl-preta .emblema-anel { border-color: #161616; }
+  .carta-face.classico.cl-vermelha .marca, .carta-face.classico.cl-vermelha .central-fraca,
+  .carta-face.classico.cl-vermelha .emblema-letra, .carta-face.classico.cl-vermelha .emblema-naipe { color: #a3161c; }
+  .carta-face.classico.cl-vermelha .emblema-anel { border-color: #a3161c; }
 
   .carta-dorso { width: 100%; height: 100%; border-radius: 7px;
     background: radial-gradient(circle at 50% 50%, rgba(211,169,78,.9) 0 3px, transparent 3.5px) 0 0/13px 13px,
@@ -203,6 +226,14 @@
   .modo-desc { font-size: .78rem; color: var(--texto-esbatido); max-width: 34ch; line-height: 1.5; }
   .modo-desc b { color: var(--creme); }
 
+  .tema-picker { display: flex; gap: 10px; }
+  .tema-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(255,255,255,.04);
+    border: 1px solid var(--painel-borda); border-radius: 10px; padding: 8px 14px; cursor: pointer; font: inherit; font-size: .72rem; font-weight: 700; color: var(--texto-claro); }
+  .tema-btn.ativo { border-color: var(--dourado); box-shadow: 0 0 0 2px rgba(211,169,78,.3); color: var(--dourado); }
+  .tema-btn:focus-visible { outline: 2px solid var(--dourado); outline-offset: 2px; }
+  .tema-preview { width: 46px; height: 66px; pointer-events: none; }
+  .tema-preview .carta-face { width: 100%; height: 100%; }
+
   .botoes { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   button.principal { font: inherit; font-weight: 800; font-size: 1rem; border: 0; border-radius: 999px; cursor: pointer;
     padding: 11px 26px; background: linear-gradient(180deg, #e3bd6c, var(--dourado)); color: #2c1c05; box-shadow: 0 4px 0 #8a6a2c; }
@@ -236,7 +267,7 @@
     <div class="zona-central">
       <div class="vaza-info" id="vazaInfo">Vaza 0 / 10</div>
       <div class="trunfo-badge" id="trunfoBadge" hidden>
-        <div class="mini-carta carta-face" id="trunfoMini"></div>
+        <div class="mini-carta" id="trunfoMini"></div>
         <span id="trunfoTexto">Trunfo</span>
       </div>
       <div class="pilha-baralho" id="pilhaBaralho"></div>
@@ -257,6 +288,7 @@
         <button class="modo-btn" data-n="4" type="button">4</button>
       </div>
       <p class="modo-desc" id="modoDesc"></p>
+      <div class="tema-picker" id="temaPicker" role="group" aria-label="Estilo das cartas"></div>
       <div class="regras">
         Baralho de 40 cartas, <b>4 lugares</b> à mesa em 2 equipas de parceiros opostos (Sul+Norte contra Oeste+Este). Cada um recebe 10 cartas; a última revela o <b>trunfo</b>.<br><br>
         Força: <b>Ás</b>(11) · <b>7</b>(10) · <b>Rei</b>(4) · <b>Valete</b>(3) · <b>Dama</b>(2) · restantes(0). É obrigatório <b>seguir o naipe</b>; sem cartas desse naipe, corta-se com trunfo ou descarta-se.<br><br>
@@ -443,9 +475,25 @@
     return menorCarta(naoTrunfo.length ? naoTrunfo : legais);
   }
 
+  // ---------------- tema do baralho ----------------
+  let temaCartas = 'dourado';
+  try { const t = localStorage.getItem('sueca4-tema'); if (t === 'dourado' || t === 'classico') temaCartas = t; } catch (e) {}
+
   // ---------------- render de cartas ----------------
-  function elCartaFace(carta) {
+  function elCartaFace(carta, tema = temaCartas) {
     const el = document.createElement('div');
+    if (tema === 'classico') {
+      const cor = (carta.naipe === 'copas' || carta.naipe === 'ouros') ? 'cl-vermelha' : 'cl-preta';
+      const faceCard = carta.rank === 'A' || carta.rank === 'K' || carta.rank === 'Q' || carta.rank === 'J';
+      el.className = `carta-face classico ${cor}`;
+      el.innerHTML = `<span class="moldura"></span>
+        <span class="marca tl">${carta.rotulo}<span class="naipe">${carta.simbolo}</span></span>
+        ${faceCard
+          ? `<span class="emblema"><span class="emblema-anel"></span><span class="emblema-letra">${carta.rotulo}</span><span class="emblema-naipe">${carta.simbolo}</span></span>`
+          : `<span class="central-fraca">${carta.simbolo}</span>`}
+        <span class="marca br">${carta.rotulo}<span class="naipe">${carta.simbolo}</span></span>`;
+      return el;
+    }
     el.className = `carta-face ${carta.classe}`;
     el.innerHTML = `<span class="marca tl">${carta.rotulo}<span class="naipe">${carta.simbolo}</span></span>
       <span class="central-naipe">${carta.simbolo}</span><span class="central-rank">${carta.rotulo}</span>
@@ -576,8 +624,8 @@
 
   function revelarTrunfo(cartaTrunfo) {
     estado.trunfo = cartaTrunfo.naipe;
-    const mini = $('trunfoMini'); mini.className = `mini-carta carta-face ${cartaTrunfo.classe}`;
-    mini.innerHTML = `<span class="central-rank" style="font-size:.9rem">${cartaTrunfo.rotulo}</span><span class="central-naipe" style="font-size:1rem;opacity:.35">${cartaTrunfo.simbolo}</span>`;
+    const mini = $('trunfoMini'); mini.className = 'mini-carta'; mini.innerHTML = '';
+    mini.appendChild(elCartaFace(cartaTrunfo));
     $('trunfoTexto').textContent = `Trunfo: ${NAIPES.find(n => n.id === cartaTrunfo.naipe).nome}`;
     $('trunfoBadge').hidden = false;
   }
@@ -731,6 +779,28 @@
     numHumanos = Number(btn.dataset.n); atualizarModoUI(numHumanos);
   });
   atualizarModoUI(numHumanos);
+
+  // ---------------- seletor de tema das cartas ----------------
+  const NOMES_TEMA = [['dourado', 'Dourado'], ['classico', 'Clássico']];
+  function renderTemaPicker() {
+    const cont = $('temaPicker'); cont.innerHTML = '';
+    const amostra = { rank: 'A', naipe: 'copas', simbolo: '♥', classe: 'vermelha', rotulo: 'A' };
+    for (const [id, nome] of NOMES_TEMA) {
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = `tema-btn ${temaCartas === id ? 'ativo' : ''}`;
+      const preview = document.createElement('div'); preview.className = 'tema-preview';
+      preview.appendChild(elCartaFace(amostra, id));
+      const label = document.createElement('span'); label.textContent = nome;
+      btn.appendChild(preview); btn.appendChild(label);
+      btn.addEventListener('click', () => {
+        temaCartas = id; try { localStorage.setItem('sueca4-tema', id); } catch (e) {}
+        renderTemaPicker();
+        if (assentoAtivo) renderMaoAtiva();
+      });
+      cont.appendChild(btn);
+    }
+  }
+  renderTemaPicker();
 
   $('btnJogar').addEventListener('click', () => { ctxAudio(); iniciarMao(); });
   $('btnNovaMao').addEventListener('click', iniciarMao);
