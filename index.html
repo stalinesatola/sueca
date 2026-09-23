@@ -1,4 +1,5 @@
 <title>Sueca a Quatro</title>
+<link rel="icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Karla:wght@400;500;700;800&display=swap">
 <style>
@@ -46,8 +47,11 @@
     border: 1px solid #5a3c25; border-radius: 12px; padding: 10px 14px;
     box-shadow: 0 3px 0 rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
   }
-  h1 { margin: 0; font-family: "Cinzel", serif; font-weight: 700; font-size: 1.4rem; color: var(--dourado); letter-spacing: .03em; }
+  h1 { margin: 0; display: flex; align-items: center; gap: 10px; font-family: "Cinzel", serif; font-weight: 700; font-size: 1.4rem; color: var(--dourado); letter-spacing: .03em; }
   h1 small { display: block; font-family: "Karla"; font-weight: 500; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--texto-esbatido); margin-top: 1px; }
+  .logo-emblema { width: 38px; height: 38px; border-radius: 10px; background: #fbfaf5; padding: 3px; flex-shrink: 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,.45), inset 0 0 0 1px rgba(0,0,0,.06); }
+  .logo-emblema img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; display: block; }
   .placar { display: flex; gap: 12px; align-items: center; font-variant-numeric: tabular-nums; }
   .placar .item { text-align: center; }
   .placar .item b { display: block; font-size: 1.1rem; font-weight: 800; }
@@ -253,7 +257,7 @@
 
 <div class="app">
   <header>
-    <h1>Sueca<small>a régua e esquadro do baralho</small></h1>
+    <h1><span class="logo-emblema"><img src="logo.png" alt="Sueca" width="38" height="38"></span>Sueca<small>a régua e esquadro do baralho</small></h1>
     <div class="placar">
       <div class="item eqA"><b id="phA">0</b><span>Sul·Norte</span></div>
       <div class="item eqB"><b id="phB">0</b><span>Oeste·Este</span></div>
