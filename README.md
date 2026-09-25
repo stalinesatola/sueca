@@ -1,6 +1,6 @@
 # Sueca
 
-Jogo de cartas Sueca em HTML/CSS/JS puro (sem dependências), jogável no navegador contra o computador.
+Jogo de cartas Sueca numa mesa 3D ([three.js](https://threejs.org/)), jogável no navegador contra o computador. Um único ficheiro HTML, sem passo de build.
 
 🔗 **Jogar:** https://stalinesatola.github.io/sueca/
 
