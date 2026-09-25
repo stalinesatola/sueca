@@ -27,25 +27,16 @@ esta pasta é um projeto Vercel independente.
    configurado: `TELEGRAM_BOT_TOKEN` e as variáveis do Postgres). Localmente,
    copia `.env.example` para `.env.local` e preenche.
 
-2. **Aplicar o schema à base de dados**:
-   ```bash
-   npm install
-   npm run db:migrate
-   ```
-   Idempotente — podes correr outra vez sempre que `db/schema.sql` mudar.
+2. **Abrir uma vez `$PUBLIC_APP_URL/api/telegram/setup` no browser**
+   (em produção: https://sueca-telegram.vercel.app/api/telegram/setup). A
+   rota, idempotente, cria as tabelas que faltarem, regista o webhook do bot
+   com o segredo do ambiente e define o botão de menu "Jogar" e o comando
+   `/start`. Responde com um JSON a dizer o que correu bem. Volta a abri-la
+   se mudares de domínio, de token ou acrescentares tabelas em
+   `lib/esquema.ts`.
 
-3. **Registar o webhook do bot.** Este ambiente não tem acesso à rede do
-   Telegram, por isso este passo é para correr a partir de uma máquina com
-   acesso (ou a própria Vercel, via `curl` num terminal teu):
-   ```bash
-   curl -X POST "https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook" \
-     -H 'content-type: application/json' \
-     -d "{\"url\": \"$PUBLIC_APP_URL/api/telegram/webhook\", \"secret_token\": \"$TELEGRAM_WEBHOOK_SECRET\"}"
-   ```
-
-4. **Configurar o botão do menu no @BotFather** (opcional mas recomendado):
-   `/mybots` → escolhe o bot → **Bot Settings** → **Menu Button** → define o
-   URL para o mesmo `PUBLIC_APP_URL`.
+   Localmente, só o esquema: `npm run db:migrate` (com `DATABASE_URL` no
+   `.env.local`).
 
 ## Desenvolvimento local
 
@@ -72,15 +63,16 @@ app/
     stage/[id]/start/       começa uma sessão de jogo
     session/[sessionId]/play/  joga uma carta, resolve vazas/robôs, fecha a mão
     telegram/webhook/       bot (grammY)
+    telegram/setup/         configuração única: tabelas, webhook, botão de menu
 lib/
   game/                  motor puro (baralho, regras, IA, escada de estágios)
   db.ts                  acesso à base de dados (Neon serverless driver)
+  esquema.ts             esquema da base de dados (fonte única)
   telegram-auth.ts        validação do initData
   api-auth.ts             middleware de autenticação das rotas
   client/                 helpers do lado do browser (fetch autenticado, SDK do Telegram)
 db/
-  schema.sql              esquema completo
-  migrate.ts               aplica o schema.sql a DATABASE_URL
+  migrate.ts               aplica lib/esquema.ts a DATABASE_URL (uso local)
 ```
 
 ## O que falta (a seguir)
