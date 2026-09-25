@@ -1,5 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import type { EstadoJogo } from './game/motor';
+import { INSTRUCOES_ESQUEMA } from './esquema';
 
 // Uma ligação HTTP por invocação — é o modelo recomendado pela Neon para
 // funções serverless (sem pool persistente a gerir entre invocações frias).
@@ -7,6 +8,15 @@ function obterSql() {
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) throw new Error('DATABASE_URL não está definida neste ambiente.');
   return neon(databaseUrl);
+}
+
+/** Cria as tabelas que faltarem. Idempotente; devolve quantas instruções correu. */
+export async function aplicarEsquema(): Promise<number> {
+  const sql = obterSql();
+  for (const instrucao of INSTRUCOES_ESQUEMA) {
+    await sql(instrucao);
+  }
+  return INSTRUCOES_ESQUEMA.length;
 }
 
 export interface Jogador {
